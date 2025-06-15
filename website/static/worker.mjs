@@ -1,5 +1,5 @@
 import prettierPackageManifest from "./lib/package-manifest.mjs";
-import * as prettier from "./lib/standalone.mjs";
+import * as prettier from "./lib/prettier/standalone.mjs";
 
 const pluginLoadPromises = new Map();
 async function importPlugin(plugin) {
@@ -58,17 +58,8 @@ const docExplorerPlugin = {
 };
 
 const plugins = [
-  ...prettierPackageManifest.builtinPlugins.map((plugin) =>
-    createPlugin(plugin),
-  ),
+  ...prettierPackageManifest.plugins.map((plugin) => createPlugin(plugin)),
   docExplorerPlugin,
-  prettierPackageManifest.builtinPlugins.some((plugin) =>
-    plugin.parsers?.includes("hermes"),
-  )
-    ? {
-        languages: [{ name: "hermes", parsers: ["hermes"] }],
-      }
-    : {},
 ];
 
 self.onmessage = async function (event) {
